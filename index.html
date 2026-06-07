@@ -140,24 +140,28 @@ function hslToRgb(h,s,l){
 }
 
 /* FIXED: render at actual displayed size */
-function renderPainting(canvas,seed,index){
+function renderPainting(canvas, seed, index){
 
     const ctx = canvas.getContext("2d");
 
     const dpr = window.devicePixelRatio || 1;
 
-    /* Get actual CSS pixel size */
     const rect = canvas.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
 
-    /* Set internal resolution to match */
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    // CSS size
+    const cssWidth = rect.width;
+    const cssHeight = rect.height;
 
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    // REAL pixel buffer size
+    const width = Math.floor(cssWidth * dpr);
+    const height = Math.floor(cssHeight * dpr);
 
-    const image = ctx.createImageData(width,height);
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.setTransform(1,0,0,1,0,0);
+
+    const image = ctx.createImageData(width, height);
     const pixels = image.data;
 
     const t = index * 1.173;
@@ -165,26 +169,28 @@ function renderPainting(canvas,seed,index){
 
     let p = 0;
 
-    for(let y=0;y<height;y++){
-        for(let x=0;x<width;x++){
+    for(let y = 0; y < height; y++){
+        for(let x = 0; x < width; x++){
 
-            const nx = x/width;
-            const ny = y/height;
-            const n = noise(x,y,t,seed);
+            // IMPORTANT: normalize using pixel space
+            const nx = x / width;
+            const ny = y / height;
+
+            const n = noise(x, y, t, seed);
 
             const hue =
                 baseHue +
-                160*n +
-                90*Math.sin(nx*5+t) +
-                60*Math.cos(ny*4-t);
+                160 * n +
+                90 * Math.sin(nx * 5 + t) +
+                60 * Math.cos(ny * 4 - t);
 
-            const sat = 55 + 40*Math.sin(n*4);
-            const light = 48 + 28*Math.cos(n*5);
+            const sat = 55 + 40 * Math.sin(n * 4);
+            const light = 48 + 28 * Math.cos(n * 5);
 
             const rgb = hslToRgb(
-                (((hue%360)+360)%360)/360,
-                sat/100,
-                light/100
+                (((hue % 360) + 360) % 360) / 360,
+                sat / 100,
+                light / 100
             );
 
             pixels[p++] = rgb[0];
@@ -194,9 +200,8 @@ function renderPainting(canvas,seed,index){
         }
     }
 
-    ctx.putImageData(image,0,0);
+    ctx.putImageData(image, 0, 0);
 }
-
 function buildConditions(index){
     const type = conditionTypes[index % conditionTypes.length];
     let seed, text;
