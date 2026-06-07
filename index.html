@@ -34,10 +34,10 @@ body{
     margin-bottom:60px;
 }
 
-/* Canvas stays centered */
+/* Canvas fills width, keeps aspect ratio */
 canvas{
     width:100%;
-    height:auto;
+    aspect-ratio:3/4; /* 600×800 ratio */
     display:block;
     box-shadow:0 2px 20px rgba(0,0,0,0.08);
     border-radius:6px;
@@ -86,7 +86,7 @@ const conditionTypes = [
     "weekday","season","orientation","timealive","combined"
 ];
 
-/* NEW: rotating usernames */
+/* Rotating usernames */
 const usernames = [
     "InfinitePainter",
     "EnviroBrush",
@@ -139,14 +139,22 @@ function hslToRgb(h,s,l){
     ];
 }
 
+/* FIXED: render at actual displayed size */
 function renderPainting(canvas,seed,index){
+
     const ctx = canvas.getContext("2d");
-    const width = 600;
-    const height = 800;
+
     const dpr = window.devicePixelRatio || 1;
 
+    /* Get actual CSS pixel size */
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    /* Set internal resolution to match */
     canvas.width = width * dpr;
     canvas.height = height * dpr;
+
     ctx.setTransform(dpr,0,0,dpr,0,0);
 
     const image = ctx.createImageData(width,height);
@@ -159,6 +167,7 @@ function renderPainting(canvas,seed,index){
 
     for(let y=0;y<height;y++){
         for(let x=0;x<width;x++){
+
             const nx = x/width;
             const ny = y/height;
             const n = noise(x,y,t,seed);
@@ -250,7 +259,6 @@ function createArtwork(){
 
     const conditions = buildConditions(artworkCount);
 
-    /* NEW: rotating username */
     const username = usernames[(artworkCount - 1) % usernames.length];
 
     caption.innerHTML =
@@ -262,7 +270,10 @@ function createArtwork(){
 
     gallery.insertBefore(artwork, sentinel);
 
-    renderPainting(canvas, conditions.seed, artworkCount);
+    /* Render AFTER canvas is in the DOM so size is correct */
+    requestAnimationFrame(()=>{
+        renderPainting(canvas, conditions.seed, artworkCount);
+    });
 }
 
 for(let i=0;i<8;i++){
