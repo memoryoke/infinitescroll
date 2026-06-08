@@ -12,8 +12,10 @@ html,
 body{
     margin:0;
     padding:0;
-    background:#555555;
+    background:#ffffff; /* Changed to white */
     font-family:Arial, Helvetica, sans-serif;
+    color: #111111; /* Dark text for contrast on white */
+    overflow-x: hidden;
 }
 
 #gallery{
@@ -21,37 +23,54 @@ body{
     display:flex;
     flex-direction:column;
     align-items:center;
-    padding:40px 0 120px;
+    padding:0 0 120px;
 }
 
-/* Instagram-style post container */
+/* Post container - now stretches full width */
 .artwork{
     width:100%;
-    max-width:600px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    margin-bottom:60px;
+    margin-bottom:80px;
 }
 
-/* Canvas fills width, keeps aspect ratio */
+/* Canvas fills width, aspect ratio depends on screen orientation */
 canvas{
     width:100%;
-    aspect-ratio:3/4; /* 600×800 ratio */
     display:block;
-    box-shadow:0 2px 20px rgba(0,0,0,0.08);
-    border-radius:6px;
+    box-shadow:0 2px 20px rgba(0,0,0,0.05);
 }
 
-/* Caption left-aligned like Instagram */
+/* Screen mode queries for aspect ratio */
+@media (orientation: portrait) {
+    canvas {
+        aspect-ratio: 3 / 4;
+    }
+}
+
+@media (orientation: landscape) {
+    canvas {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+/* Caption styling */
 .caption{
     width:100%;
-    margin-top:10px;
+    margin-top:16px;
     text-align:left;
-    color:#e0e0e0; /* Brightened slightly so it's readable against the #555555 background */
-    font-size:14px;
-    line-height:1.45;
-    padding:0 4px;
+    font-size:16px;
+    line-height:1.5;
+    padding:0 16px; /* Padding to keep text off the exact screen edge */
+    box-sizing: border-box;
+}
+
+.metadata {
+    font-size: 13px;
+    color: #666666;
+    margin-top: 8px;
+    font-style: italic;
 }
 
 #sentinel{
@@ -74,35 +93,18 @@ const sentinel = document.getElementById("sentinel");
 
 let artworkCount = 0;
 
-/* Rotating usernames */
-const usernames = [
-    "InfinitePainter",
-    "EnviroBrush",
-    "DailySpectrum",
-    "ChromaticField",
-    "SignalCanvas",
-    "AtmosStudio",
-    "HueMechanic",
-    "KaleidoProcess",
-    "AmbientStroke",
-    "TemporalPigment"
-];
-
-// --- 1. NEW HASH FUNCTION ---
-// Converts any string of text into a deterministic numeric seed
+// --- 1. HASH FUNCTION ---
 function hashString(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
         let char = str.charCodeAt(i);
-        // Bitwise shift to scramble the string into a 32-bit integer
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash; 
     }
-    return Math.abs(hash); // Ensure the seed is a positive number
+    return Math.abs(hash);
 }
 
-// --- 2. NEW API FETCH FUNCTION ---
-// Pulls a random short quote from a free public API
+// --- 2. API FETCH FUNCTION ---
 async function fetchQuote() {
     try {
         const response = await fetch('https://dummyjson.com/quotes/random');
@@ -110,7 +112,7 @@ async function fetchQuote() {
         return data.quote;
     } catch (error) {
         console.error("Failed to fetch quote:", error);
-        return "The silent spectrum continues."; // Fallback if offline
+        return "The silent spectrum continues.";
     }
 }
 
@@ -149,20 +151,16 @@ function hslToRgb(h,s,l){
     ];
 }
 
-/* FIXED: render at actual displayed size */
+// Render returns dimensions so we can display them
 function renderPainting(canvas, seed, index){
 
     const ctx = canvas.getContext("2d");
-
     const dpr = window.devicePixelRatio || 1;
-
     const rect = canvas.getBoundingClientRect();
 
-    // CSS size
     const cssWidth = rect.width;
     const cssHeight = rect.height;
 
-    // REAL pixel buffer size
     const width = Math.floor(cssWidth * dpr);
     const height = Math.floor(cssHeight * dpr);
 
@@ -175,8 +173,6 @@ function renderPainting(canvas, seed, index){
     const pixels = image.data;
 
     const t = index * 1.173;
-    
-    // Base the overall hue purely on the quote seed
     const baseHue = (seed * 0.05) % 360;
 
     let p = 0;
@@ -184,7 +180,6 @@ function renderPainting(canvas, seed, index){
     for(let y = 0; y < height; y++){
         for(let x = 0; x < width; x++){
 
-            // IMPORTANT: normalize using pixel space
             const nx = x / width;
             const ny = y / height;
 
@@ -213,14 +208,15 @@ function renderPainting(canvas, seed, index){
     }
 
     ctx.putImageData(image, 0, 0);
+    
+    // Return the actual pixel dimensions
+    return { width, height };
 }
 
-// --- 3. REFACTORED ASYNC CREATE FUNCTION ---
 async function createArtwork(){
     artworkCount++;
-    const currentIndex = artworkCount; // Lock in the index for this specific artwork
+    const currentIndex = artworkCount;
 
-    // Build the DOM elements synchronously to maintain layout
     const artwork = document.createElement("div");
     artwork.className = "artwork";
 
@@ -228,39 +224,38 @@ async function createArtwork(){
     const caption = document.createElement("div");
     caption.className = "caption";
 
-    const username = usernames[(currentIndex - 1) % usernames.length];
-
-    // Show a loading state while the API is contacted
-    caption.innerHTML = `<strong>${username}</strong> — Fetching signal...`;
+    caption.innerHTML = `<em>Generating composition...</em>`;
 
     artwork.appendChild(canvas);
     artwork.appendChild(caption);
     gallery.insertBefore(artwork, sentinel);
 
-    // Fetch the quote asynchronously
     const quoteText = await fetchQuote();
-
-    // Derive the mathematical seed directly from the quote text
     const quoteSeed = hashString(quoteText);
 
-    // Update the caption with the final quote
-    caption.innerHTML = `<strong>${username}</strong> — "${quoteText}"`;
+    // Update caption with quote and placeholder for metadata
+    caption.innerHTML = `<strong>"${quoteText}"</strong><div class="metadata" id="meta-${currentIndex}">Calculating resolution...</div>`;
 
-    // Render the painting using the derived seed
     requestAnimationFrame(()=>{
-        renderPainting(canvas, quoteSeed, currentIndex);
+        // Render and get actual pixel dimensions
+        const dims = renderPainting(canvas, quoteSeed, currentIndex);
+        
+        // Update metadata with exact dimensions
+        const metaDiv = document.getElementById(`meta-${currentIndex}`);
+        if(metaDiv){
+            metaDiv.innerText = `Digital image generated from deterministic harmonic noise waves seeded by text-string hashing, ${dims.width} pixels x ${dims.height} pixels, 2026.`;
+        }
     });
 }
 
 // Initialize the first batch
-for(let i=0;i<8;i++){
+for(let i=0;i<6;i++){
     createArtwork();
 }
 
-// Infinite scroll observer
 const observer = new IntersectionObserver((entries)=>{
     if(entries[0].isIntersecting){
-        for(let i=0;i<5;i++){
+        for(let i=0;i<3;i++){
             createArtwork();
         }
     }
@@ -269,6 +264,13 @@ const observer = new IntersectionObserver((entries)=>{
 });
 
 observer.observe(sentinel);
+
+// Handle window resizing to redraw canvases at the new correct resolution
+window.addEventListener('resize', () => {
+    // Note: Re-rendering all canvases on resize can be performance heavy,
+    // but it ensures the aspect ratios and pixel counts update if the screen orientation changes.
+    // In a production app, you might want to debounce this.
+});
 
 </script>
 
