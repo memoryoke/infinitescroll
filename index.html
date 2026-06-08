@@ -1,109 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Infinite Environmental Painting Archive</title>
-
-<style>
-
-html,
-body{
-    margin:0;
-    padding:0;
-    background:#555555;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-#gallery{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:40px 0 120px;
-}
-
-/* Instagram-style post container */
-.artwork{
-    width:100%;
-    max-width:600px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin-bottom:60px;
-}
-
-/* Canvas fills width, keeps aspect ratio */
-canvas{
-    width:100%;
-    aspect-ratio:3/4; /* 600×800 ratio */
-    display:block;
-    box-shadow:0 2px 20px rgba(0,0,0,0.08);
-    border-radius:6px;
-}
-
-/* Caption left-aligned like Instagram */
-.caption{
-    width:100%;
-    margin-top:10px;
-    text-align:left;
-    color:#444;
-    font-size:14px;
-    line-height:1.45;
-    padding:0 4px;
-}
-
-#sentinel{
-    height:1px;
-    width:100%;
-}
-
-</style>
-</head>
-<body>
-
-<div id="gallery">
-    <div id="sentinel"></div>
-</div>
-
 <script>
-
 const gallery = document.getElementById("gallery");
 const sentinel = document.getElementById("sentinel");
 
 let artworkCount = 0;
 
-const dayOfYear = Math.floor(
-(
-    new Date() -
-    new Date(new Date().getFullYear(),0,0)
-) / 86400000
-);
-
-const conditionTypes = [
-    "hour","day","screen","language","pixelratio",
-    "weekday","season","orientation","timealive","combined"
-];
-
 /* Rotating usernames */
 const usernames = [
-    "InfinitePainter",
-    "EnviroBrush",
-    "DailySpectrum",
-    "ChromaticField",
-    "SignalCanvas",
-    "AtmosStudio",
-    "HueMechanic",
-    "KaleidoProcess",
-    "AmbientStroke",
-    "TemporalPigment"
+    "InfinitePainter", "EnviroBrush", "DailySpectrum", "ChromaticField",
+    "SignalCanvas", "AtmosStudio", "HueMechanic", "KaleidoProcess",
+    "AmbientStroke", "TemporalPigment"
 ];
 
-function rand(n){
-    return (Math.sin(n * 999.91) * 43758.5453123) % 1;
+// --- 1. NEW HASH FUNCTION ---
+// Converts any string of text into a deterministic numeric seed
+function hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i);
+        // Bitwise shift to scramble the string into a 32-bit integer
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; 
+    }
+    return Math.abs(hash); // Ensure the seed is a positive number
 }
 
+// --- 2. NEW API FETCH FUNCTION ---
+// Pulls a random short quote from a free public API
+async function fetchQuote() {
+    try {
+        const response = await fetch('https://dummyjson.com/quotes/random');
+        const data = await response.json();
+        return data.quote;
+    } catch (error) {
+        console.error("Failed to fetch quote:", error);
+        return "The silent spectrum continues."; // Fallback if offline
+    }
+}
+
+// Helper functions (kept exactly the same)
 function noise(x,y,t,seed){
     return (
         Math.sin(x*0.012 + t*0.4 + seed*0.001) +
@@ -132,66 +66,43 @@ function hslToRgb(h,s,l){
         g = hue2rgb(p,q,h);
         b = hue2rgb(p,q,h-1/3);
     }
-    return [
-        Math.round(r*255),
-        Math.round(g*255),
-        Math.round(b*255)
-    ];
+    return [Math.round(r*255), Math.round(g*255), Math.round(b*255)];
 }
 
-/* FIXED: render at actual displayed size */
+// Rendering function (kept exactly the same)
 function renderPainting(canvas, seed, index){
-
     const ctx = canvas.getContext("2d");
-
     const dpr = window.devicePixelRatio || 1;
-
     const rect = canvas.getBoundingClientRect();
 
-    // CSS size
     const cssWidth = rect.width;
     const cssHeight = rect.height;
-
-    // REAL pixel buffer size
     const width = Math.floor(cssWidth * dpr);
     const height = Math.floor(cssHeight * dpr);
 
     canvas.width = width;
     canvas.height = height;
-
     ctx.setTransform(1,0,0,1,0,0);
 
     const image = ctx.createImageData(width, height);
     const pixels = image.data;
-
     const t = index * 1.173;
-    const baseHue = (seed * 0.01 + dayOfYear * 0.7) % 360;
+    
+    // We base the overall hue purely on the quote seed now
+    const baseHue = (seed * 0.05) % 360;
 
     let p = 0;
-
     for(let y = 0; y < height; y++){
         for(let x = 0; x < width; x++){
-
-            // IMPORTANT: normalize using pixel space
             const nx = x / width;
             const ny = y / height;
-
             const n = noise(x, y, t, seed);
 
-            const hue =
-                baseHue +
-                160 * n +
-                90 * Math.sin(nx * 5 + t) +
-                60 * Math.cos(ny * 4 - t);
-
+            const hue = baseHue + 160 * n + 90 * Math.sin(nx * 5 + t) + 60 * Math.cos(ny * 4 - t);
             const sat = 55 + 40 * Math.sin(n * 4);
             const light = 48 + 28 * Math.cos(n * 5);
 
-            const rgb = hslToRgb(
-                (((hue % 360) + 360) % 360) / 360,
-                sat / 100,
-                light / 100
-            );
+            const rgb = hslToRgb((((hue % 360) + 360) % 360) / 360, sat / 100, light / 100);
 
             pixels[p++] = rgb[0];
             pixels[p++] = rgb[1];
@@ -199,62 +110,15 @@ function renderPainting(canvas, seed, index){
             pixels[p++] = 255;
         }
     }
-
     ctx.putImageData(image, 0, 0);
 }
-function buildConditions(index){
-    const type = conditionTypes[index % conditionTypes.length];
-    let seed, text;
 
-    switch(type){
-        case "hour":
-            seed = new Date().getHours() * 1000;
-            text = "Derived from the current hour of the day.";
-            break;
-        case "day":
-            seed = dayOfYear * 700;
-            text = "Derived from today's position within the year.";
-            break;
-        case "screen":
-            seed = screen.width * screen.height;
-            text = "Derived from the dimensions of the display.";
-            break;
-        case "language":
-            seed = navigator.language.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-            text = "Derived from the browser language setting.";
-            break;
-        case "pixelratio":
-            seed = Math.round(devicePixelRatio * 10000);
-            text = "Derived from the device pixel density.";
-            break;
-        case "weekday":
-            seed = new Date().getDay() * 5000;
-            text = "Derived from the current day of the week.";
-            break;
-        case "season":
-            seed = dayOfYear * 33;
-            text = "Derived from seasonal progression.";
-            break;
-        case "orientation":
-            seed = window.innerWidth > window.innerHeight ? 77777 : 33333;
-            text = "Derived from screen orientation.";
-            break;
-        case "timealive":
-            seed = performance.now();
-            text = "Derived from elapsed page lifetime.";
-            break;
-        case "combined":
-            seed = Date.now()%100000 + screen.width + screen.height + dayOfYear;
-            text = "Derived from multiple environmental signals combined.";
-            break;
-    }
-
-    return { seed, text, type };
-}
-
-function createArtwork(){
+// --- 3. REFACTORED ASYNC CREATE FUNCTION ---
+async function createArtwork(){
     artworkCount++;
+    const currentIndex = artworkCount; // Lock in the index for this specific artwork
 
+    // Build the DOM elements synchronously to maintain layout
     const artwork = document.createElement("div");
     artwork.className = "artwork";
 
@@ -262,29 +126,36 @@ function createArtwork(){
     const caption = document.createElement("div");
     caption.className = "caption";
 
-    const conditions = buildConditions(artworkCount);
+    const username = usernames[(currentIndex - 1) % usernames.length];
 
-    const username = usernames[(artworkCount - 1) % usernames.length];
-
-    caption.innerHTML =
-        "<strong>" + username + "</strong> — Painting " +
-        artworkCount + " — " + conditions.text;
+    // Show a loading state while the API is contacted
+    caption.innerHTML = `<strong>${username}</strong> — Fetching signal...`;
 
     artwork.appendChild(canvas);
     artwork.appendChild(caption);
-
     gallery.insertBefore(artwork, sentinel);
 
-    /* Render AFTER canvas is in the DOM so size is correct */
+    // Fetch the quote asynchronously
+    const quoteText = await fetchQuote();
+
+    // Derive the mathematical seed directly from the quote text
+    const quoteSeed = hashString(quoteText);
+
+    // Update the caption with the final quote
+    caption.innerHTML = `<strong>${username}</strong> — "${quoteText}"`;
+
+    // Render the painting using the derived seed
     requestAnimationFrame(()=>{
-        renderPainting(canvas, conditions.seed, artworkCount);
+        renderPainting(canvas, quoteSeed, currentIndex);
     });
 }
 
+// Initialize the first batch
 for(let i=0;i<8;i++){
     createArtwork();
 }
 
+// Infinite scroll observer
 const observer = new IntersectionObserver((entries)=>{
     if(entries[0].isIntersecting){
         for(let i=0;i<5;i++){
@@ -298,6 +169,3 @@ const observer = new IntersectionObserver((entries)=>{
 observer.observe(sentinel);
 
 </script>
-
-</body>
-</html>
