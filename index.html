@@ -1,3 +1,779 @@
+
+Gemini
+New chat
+Search chats
+Images
+Videos
+Library
+Ippitsuryu
+Giotto: Renaissance Art's Dawn
+robot arm
+Generative Vector Plotter App
+Natural Blood Pressure Management Guide
+Bike
+Thin Client
+Nightspawn
+High School Heroes
+Generating Unique Artwork Titles
+Reminder To Phone Karis
+Solid Paint Stick Product Information
+Italian Art and AI Translation
+Trout Fishing in America Overview
+Giotto's Legendary Myths Explained
+Identifying The Song Playing
+Gemini Smart Speaker Compatibility
+generate a professional black and grey windows wallpaper in the correct ratio with slight colour highlights, in the style of oem windows 11 wallpaer
+No Notes Found For Margam Park
+Phishing Attempt Warning and Advice
+Downloading and Quality of Zoom Recordings
+Cardiff Rain Forecast
+Cardiff Weather Today
+Illustrated Art Books For Kindle
+Tesco Shopping List Organization
+Ticketmaster Resale Options Explained
+Photoshop Ruler Shortcut
+Stitch Challenge: AI Design Competition
+The Contemporary Human Condition Explained
+Procedural Phenakistoscope App Generator
+Why Paper Mate Flairs Don't Dry
+Echo Spot Power Cable Replacement Guide
+Cwlt Collaborative Art Projects
+This is my white bathroom. Please. Can you show me what it would look like with this floral wallpaper?
+Optimize SVG for Plotter Output
+Urn Capacity and Cup Servings Calculation
+WhatsApp Communities vs. Group Chats
+Smooth Curve Control for Vector Lines
+Sit-Up Commuter Bike Recommendations
+Curves vs. Nodes: A Comparison
+Fix Kodak ESP C315 Printhead Error
+Art Books for Kindle
+Polaroid Hi-Print Paper for Badges
+Instagram Image Cropping Solutions
+Jeff VanderMeer's Green Quotes
+Fake Instagram Setting Engagement Bait
+Zoom out this image by 25%
+Hi Gemini can you can you make an image for me. generate an image of a kobold with a hood, carrying a crossbow, standing on a deceased pixie. the kobold has copper colour scales and only one eye. he is in a dirty lane in 1920s Birmingham. he is wearing red shiny shorts.
+Cardiff Art Group "Gwaith" Explained
+Cardiff Districts List Extraction
+Reminder To Bring Shower Gel
+Reminder Set For Carpet Fitting
+Spotify Playlist Creation
+Untitled
+Find Specsavers Subscription Start Date
+Sweet Potato Meal Suggestions
+Gemini's App Integration Capabilities
+Camera Comparison for Art Photography
+Finding Jack & Jones Denim Jacket
+Affordable Flash Setup for Painting Photography
+Biology Exam Grade Calculation
+Premiere Pro Auto Levels Equivalent
+
+Activity
+Cardiff, UK
+Based on your places (work)
+Update location
+Conversation with Gemini
+I have this app but want unique titles for each artwork instead og the selected random few eg "InfinitePainter . CAn you plug the appinto a word source or quote bank to get interesting titles?
+
+Integrating a word source or quote bank to generate unique titles is a great way to give each generative piece its own distinct character. Since you are building these applications in HTML and JavaScript, there are a few straightforward ways to handle this, ranging from local word banks to dynamic external APIs.
+
+Here are three methods to implement this in your code:
+
+1. The Local Word Bank (Fastest and Most Reliable)
+The simplest approach is to build arrays of words directly in your JavaScript and randomly combine them. This ensures your app works offline and never experiences API lag. You can structure this to create adjective-noun pairings or more complex sentence structures.
+
+JavaScript
+// Define your word banks
+const adjectives = ["Infinite", "Recursive", "Silent", "Euclidean", "Kinetic", "Liminal"];
+const nouns = ["Painter", "Algorithm", "Topology", "Echo", "Locus", "Sequence"];
+
+// Function to generate a title
+function generateTitle() {
+  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  return `${adj} ${noun}`;
+}
+
+// Example usage
+console.log(generateTitle()); // Outputs: "Liminal Sequence"
+2. Fetching from an External JSON File (Cleanest Code)
+If you want a massive list of words without cluttering your main JavaScript file, you can host a .json file containing thousands of words or quotes and fetch it when the app loads.
+
+words.json:
+
+JSON
+{
+  "abstract": ["Void", "Flux", "Aura"],
+  "technical": ["Vector", "Plot", "Matrix"]
+}
+JavaScript:
+
+JavaScript
+let wordBank = {};
+
+// Load the words when the app starts
+async function loadWords() {
+  const response = await fetch('words.json');
+  wordBank = await response.json();
+}
+
+function getJsonTitle() {
+  const techWord = wordBank.technical[Math.floor(Math.random() * wordBank.technical.length)];
+  const absWord = wordBank.abstract[Math.floor(Math.random() * wordBank.abstract.length)];
+  return `${techWord} ${absWord}`;
+}
+3. Plugging into a Live API (Most Dynamic)
+If you want truly unpredictable results or full quotes, you can plug your app into a free public API. For example, the Datamuse API is excellent for finding related words, and the Quotable API is great for pulling random quotes.
+
+Here is how you would pull a short, random quote to use as a title:
+
+JavaScript
+async function fetchQuoteTitle() {
+  try {
+    // Fetch a random quote with a maximum length of 30 characters
+    const response = await fetch('https://api.quotable.io/random?maxLength=30');
+    const data = await response.json();
+    return data.content; 
+  } catch (error) {
+    console.error("Failed to fetch title:", error);
+    return "Fallback Title"; // Always have a fallback just in case the plotter is running and the internet drops
+  }
+}
+What kind of vibe are you aiming for with these titles—abstract and poetic, highly technical, or something else entirely?
+
+Let's go with short random quotes (3)
+
+
+
+Here's my code:
+
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+
+<title>Infinite Environmental Painting Archive</title>
+
+
+
+<style>
+
+
+
+html,
+
+body{
+
+    margin:0;
+
+    padding:0;
+
+    background:#555555;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+}
+
+
+
+#gallery{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    padding:40px 0 120px;
+
+}
+
+
+
+/* Instagram-style post container */
+
+.artwork{
+
+    width:100%;
+
+    max-width:600px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    margin-bottom:60px;
+
+}
+
+
+
+/* Canvas fills width, keeps aspect ratio */
+
+canvas{
+
+    width:100%;
+
+    aspect-ratio:3/4; /* 600×800 ratio */
+
+    display:block;
+
+    box-shadow:0 2px 20px rgba(0,0,0,0.08);
+
+    border-radius:6px;
+
+}
+
+
+
+/* Caption left-aligned like Instagram */
+
+.caption{
+
+    width:100%;
+
+    margin-top:10px;
+
+    text-align:left;
+
+    color:#444;
+
+    font-size:14px;
+
+    line-height:1.45;
+
+    padding:0 4px;
+
+}
+
+
+
+#sentinel{
+
+    height:1px;
+
+    width:100%;
+
+}
+
+
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<div id="gallery">
+
+    <div id="sentinel"></div>
+
+</div>
+
+
+
+<script>
+
+
+
+const gallery = document.getElementById("gallery");
+
+const sentinel = document.getElementById("sentinel");
+
+
+
+let artworkCount = 0;
+
+
+
+const dayOfYear = Math.floor(
+
+(
+
+    new Date() -
+
+    new Date(new Date().getFullYear(),0,0)
+
+) / 86400000
+
+);
+
+
+
+const conditionTypes = [
+
+    "hour","day","screen","language","pixelratio",
+
+    "weekday","season","orientation","timealive","combined"
+
+];
+
+
+
+/* Rotating usernames */
+
+const usernames = [
+
+    "InfinitePainter",
+
+    "EnviroBrush",
+
+    "DailySpectrum",
+
+    "ChromaticField",
+
+    "SignalCanvas",
+
+    "AtmosStudio",
+
+    "HueMechanic",
+
+    "KaleidoProcess",
+
+    "AmbientStroke",
+
+    "TemporalPigment"
+
+];
+
+
+
+function rand(n){
+
+    return (Math.sin(n * 999.91) * 43758.5453123) % 1;
+
+}
+
+
+
+function noise(x,y,t,seed){
+
+    return (
+
+        Math.sin(x*0.012 + t*0.4 + seed*0.001) +
+
+        Math.sin(y*0.017 + t*0.6 + seed*0.002) +
+
+        Math.sin((x+y)*0.009 + t*0.9) +
+
+        Math.sin(Math.sqrt(x*x+y*y)*0.02 + t + seed*0.0003)
+
+    ) * 0.25;
+
+}
+
+
+
+function hslToRgb(h,s,l){
+
+    let r,g,b;
+
+    if(s===0){
+
+        r=g=b=l;
+
+    }else{
+
+        const hue2rgb=(p,q,t)=>{
+
+            if(t<0) t+=1;
+
+            if(t>1) t-=1;
+
+            if(t<1/6) return p+(q-p)*6*t;
+
+            if(t<1/2) return q;
+
+            if(t<2/3) return p+(q-p)*(2/3-t)*6;
+
+            return p;
+
+        };
+
+        const q = l < 0.5 ? l*(1+s) : l+s-l*s;
+
+        const p = 2*l-q;
+
+        r = hue2rgb(p,q,h+1/3);
+
+        g = hue2rgb(p,q,h);
+
+        b = hue2rgb(p,q,h-1/3);
+
+    }
+
+    return [
+
+        Math.round(r*255),
+
+        Math.round(g*255),
+
+        Math.round(b*255)
+
+    ];
+
+}
+
+
+
+/* FIXED: render at actual displayed size */
+
+function renderPainting(canvas, seed, index){
+
+
+
+    const ctx = canvas.getContext("2d");
+
+
+
+    const dpr = window.devicePixelRatio || 1;
+
+
+
+    const rect = canvas.getBoundingClientRect();
+
+
+
+    // CSS size
+
+    const cssWidth = rect.width;
+
+    const cssHeight = rect.height;
+
+
+
+    // REAL pixel buffer size
+
+    const width = Math.floor(cssWidth * dpr);
+
+    const height = Math.floor(cssHeight * dpr);
+
+
+
+    canvas.width = width;
+
+    canvas.height = height;
+
+
+
+    ctx.setTransform(1,0,0,1,0,0);
+
+
+
+    const image = ctx.createImageData(width, height);
+
+    const pixels = image.data;
+
+
+
+    const t = index * 1.173;
+
+    const baseHue = (seed * 0.01 + dayOfYear * 0.7) % 360;
+
+
+
+    let p = 0;
+
+
+
+    for(let y = 0; y < height; y++){
+
+        for(let x = 0; x < width; x++){
+
+
+
+            // IMPORTANT: normalize using pixel space
+
+            const nx = x / width;
+
+            const ny = y / height;
+
+
+
+            const n = noise(x, y, t, seed);
+
+
+
+            const hue =
+
+                baseHue +
+
+                160 * n +
+
+                90 * Math.sin(nx * 5 + t) +
+
+                60 * Math.cos(ny * 4 - t);
+
+
+
+            const sat = 55 + 40 * Math.sin(n * 4);
+
+            const light = 48 + 28 * Math.cos(n * 5);
+
+
+
+            const rgb = hslToRgb(
+
+                (((hue % 360) + 360) % 360) / 360,
+
+                sat / 100,
+
+                light / 100
+
+            );
+
+
+
+            pixels[p++] = rgb[0];
+
+            pixels[p++] = rgb[1];
+
+            pixels[p++] = rgb[2];
+
+            pixels[p++] = 255;
+
+        }
+
+    }
+
+
+
+    ctx.putImageData(image, 0, 0);
+
+}
+
+function buildConditions(index){
+
+    const type = conditionTypes[index % conditionTypes.length];
+
+    let seed, text;
+
+
+
+    switch(type){
+
+        case "hour":
+
+            seed = new Date().getHours() * 1000;
+
+            text = "Derived from the current hour of the day.";
+
+            break;
+
+        case "day":
+
+            seed = dayOfYear * 700;
+
+            text = "Derived from today's position within the year.";
+
+            break;
+
+        case "screen":
+
+            seed = screen.width * screen.height;
+
+            text = "Derived from the dimensions of the display.";
+
+            break;
+
+        case "language":
+
+            seed = navigator.language.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+
+            text = "Derived from the browser language setting.";
+
+            break;
+
+        case "pixelratio":
+
+            seed = Math.round(devicePixelRatio * 10000);
+
+            text = "Derived from the device pixel density.";
+
+            break;
+
+        case "weekday":
+
+            seed = new Date().getDay() * 5000;
+
+            text = "Derived from the current day of the week.";
+
+            break;
+
+        case "season":
+
+            seed = dayOfYear * 33;
+
+            text = "Derived from seasonal progression.";
+
+            break;
+
+        case "orientation":
+
+            seed = window.innerWidth > window.innerHeight ? 77777 : 33333;
+
+            text = "Derived from screen orientation.";
+
+            break;
+
+        case "timealive":
+
+            seed = performance.now();
+
+            text = "Derived from elapsed page lifetime.";
+
+            break;
+
+        case "combined":
+
+            seed = Date.now()%100000 + screen.width + screen.height + dayOfYear;
+
+            text = "Derived from multiple environmental signals combined.";
+
+            break;
+
+    }
+
+
+
+    return { seed, text, type };
+
+}
+
+
+
+function createArtwork(){
+
+    artworkCount++;
+
+
+
+    const artwork = document.createElement("div");
+
+    artwork.className = "artwork";
+
+
+
+    const canvas = document.createElement("canvas");
+
+    const caption = document.createElement("div");
+
+    caption.className = "caption";
+
+
+
+    const conditions = buildConditions(artworkCount);
+
+
+
+    const username = usernames[(artworkCount - 1) % usernames.length];
+
+
+
+    caption.innerHTML =
+
+        "<strong>" + username + "</strong> — Painting " +
+
+        artworkCount + " — " + conditions.text;
+
+
+
+    artwork.appendChild(canvas);
+
+    artwork.appendChild(caption);
+
+
+
+    gallery.insertBefore(artwork, sentinel);
+
+
+
+    /* Render AFTER canvas is in the DOM so size is correct */
+
+    requestAnimationFrame(()=>{
+
+        renderPainting(canvas, conditions.seed, artworkCount);
+
+    });
+
+}
+
+
+
+for(let i=0;i<8;i++){
+
+    createArtwork();
+
+}
+
+
+
+const observer = new IntersectionObserver((entries)=>{
+
+    if(entries[0].isIntersecting){
+
+        for(let i=0;i<5;i++){
+
+            createArtwork();
+
+        }
+
+    }
+
+},{
+
+    rootMargin:"1200px"
+
+});
+
+
+
+observer.observe(sentinel);
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
+
+
+
+can the seed for each artwork be developed from the text quote somehow?
+
+Yes, you can absolutely derive a numeric seed from a text quote!
+
+To do this, we need a hashing function. A hashing function takes a string of text (like a quote), looks at the numeric character codes of every letter, and mathematically scrambles them into a single, predictable integer. If the quote is the same, the number is exactly the same; if you change even one letter, the resulting number changes completely.
+
+Here is the plan to update your code:
+
+Add a string-to-number hash function to generate the seed.
+
+Add an asynchronous fetch function to pull quotes from a live API (I recommend dummyjson.com for this, as it is faster and currently more reliable than Quotable).
+
+Refactor createArtwork so it creates the canvas immediately (to prevent your layout from jumping around), displays a "Loading..." message, fetches the quote, computes the seed, and then renders the painting.
+
+Here is the fully updated <script> block. You can replace your entire current script section with this:
+
+HTML
 <script>
 const gallery = document.getElementById("gallery");
 const sentinel = document.getElementById("sentinel");
@@ -169,3 +945,303 @@ const observer = new IntersectionObserver((entries)=>{
 observer.observe(sentinel);
 
 </script>
+Key Changes Explained:
+The Loading State: Because fetching quotes over the network takes a fraction of a second, createArtwork inserts the empty div and canvas immediately with a temporary "Fetching signal..." caption. This stops the page from behaving erratically as you scroll.
+
+baseHue Update: In your original code, the base hue relied on the dayOfYear. I simplified baseHue inside renderPainting to rely purely on the newly generated string hash seed so that the quote's text entirely dictates the color palette.
+
+PROVIDE FULL HTML FILE TO DOWNLOAD PLEASE
+
+Your HTML file is ready
+HTML icon
+ infinite_p...ter_quotes 
+ HTML 
+
+I have combined your original HTML and CSS with the newly refactored JavaScript code so everything works seamlessly. (I also slightly brightened the .caption CSS font color to ensure the quotes are easy to read against the dark grey background).
+
+You can download the file above and open it directly in any browser to see the infinite scrolling gallery generating in real-time with random text quotes! Let me know if you need any other modifications.
+
+
+
+
+
+Gemini is AI and can make mistakes, including about people. Your privacy and GeminiOpens in a new window
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Infinite Environmental Painting Archive</title>
+
+<style>
+
+html,
+body{
+    margin:0;
+    padding:0;
+    background:#555555;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#gallery{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:40px 0 120px;
+}
+
+/* Instagram-style post container */
+.artwork{
+    width:100%;
+    max-width:600px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:60px;
+}
+
+/* Canvas fills width, keeps aspect ratio */
+canvas{
+    width:100%;
+    aspect-ratio:3/4; /* 600×800 ratio */
+    display:block;
+    box-shadow:0 2px 20px rgba(0,0,0,0.08);
+    border-radius:6px;
+}
+
+/* Caption left-aligned like Instagram */
+.caption{
+    width:100%;
+    margin-top:10px;
+    text-align:left;
+    color:#e0e0e0; /* Brightened slightly so it's readable against the #555555 background */
+    font-size:14px;
+    line-height:1.45;
+    padding:0 4px;
+}
+
+#sentinel{
+    height:1px;
+    width:100%;
+}
+
+</style>
+</head>
+<body>
+
+<div id="gallery">
+    <div id="sentinel"></div>
+</div>
+
+<script>
+
+const gallery = document.getElementById("gallery");
+const sentinel = document.getElementById("sentinel");
+
+let artworkCount = 0;
+
+/* Rotating usernames */
+const usernames = [
+    "InfinitePainter",
+    "EnviroBrush",
+    "DailySpectrum",
+    "ChromaticField",
+    "SignalCanvas",
+    "AtmosStudio",
+    "HueMechanic",
+    "KaleidoProcess",
+    "AmbientStroke",
+    "TemporalPigment"
+];
+
+// --- 1. NEW HASH FUNCTION ---
+// Converts any string of text into a deterministic numeric seed
+function hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        let char = str.charCodeAt(i);
+        // Bitwise shift to scramble the string into a 32-bit integer
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; 
+    }
+    return Math.abs(hash); // Ensure the seed is a positive number
+}
+
+// --- 2. NEW API FETCH FUNCTION ---
+// Pulls a random short quote from a free public API
+async function fetchQuote() {
+    try {
+        const response = await fetch('https://dummyjson.com/quotes/random');
+        const data = await response.json();
+        return data.quote;
+    } catch (error) {
+        console.error("Failed to fetch quote:", error);
+        return "The silent spectrum continues."; // Fallback if offline
+    }
+}
+
+function noise(x,y,t,seed){
+    return (
+        Math.sin(x*0.012 + t*0.4 + seed*0.001) +
+        Math.sin(y*0.017 + t*0.6 + seed*0.002) +
+        Math.sin((x+y)*0.009 + t*0.9) +
+        Math.sin(Math.sqrt(x*x+y*y)*0.02 + t + seed*0.0003)
+    ) * 0.25;
+}
+
+function hslToRgb(h,s,l){
+    let r,g,b;
+    if(s===0){
+        r=g=b=l;
+    }else{
+        const hue2rgb=(p,q,t)=>{
+            if(t<0) t+=1;
+            if(t>1) t-=1;
+            if(t<1/6) return p+(q-p)*6*t;
+            if(t<1/2) return q;
+            if(t<2/3) return p+(q-p)*(2/3-t)*6;
+            return p;
+        };
+        const q = l < 0.5 ? l*(1+s) : l+s-l*s;
+        const p = 2*l-q;
+        r = hue2rgb(p,q,h+1/3);
+        g = hue2rgb(p,q,h);
+        b = hue2rgb(p,q,h-1/3);
+    }
+    return [
+        Math.round(r*255),
+        Math.round(g*255),
+        Math.round(b*255)
+    ];
+}
+
+/* FIXED: render at actual displayed size */
+function renderPainting(canvas, seed, index){
+
+    const ctx = canvas.getContext("2d");
+
+    const dpr = window.devicePixelRatio || 1;
+
+    const rect = canvas.getBoundingClientRect();
+
+    // CSS size
+    const cssWidth = rect.width;
+    const cssHeight = rect.height;
+
+    // REAL pixel buffer size
+    const width = Math.floor(cssWidth * dpr);
+    const height = Math.floor(cssHeight * dpr);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.setTransform(1,0,0,1,0,0);
+
+    const image = ctx.createImageData(width, height);
+    const pixels = image.data;
+
+    const t = index * 1.173;
+    
+    // Base the overall hue purely on the quote seed
+    const baseHue = (seed * 0.05) % 360;
+
+    let p = 0;
+
+    for(let y = 0; y < height; y++){
+        for(let x = 0; x < width; x++){
+
+            // IMPORTANT: normalize using pixel space
+            const nx = x / width;
+            const ny = y / height;
+
+            const n = noise(x, y, t, seed);
+
+            const hue =
+                baseHue +
+                160 * n +
+                90 * Math.sin(nx * 5 + t) +
+                60 * Math.cos(ny * 4 - t);
+
+            const sat = 55 + 40 * Math.sin(n * 4);
+            const light = 48 + 28 * Math.cos(n * 5);
+
+            const rgb = hslToRgb(
+                (((hue % 360) + 360) % 360) / 360,
+                sat / 100,
+                light / 100
+            );
+
+            pixels[p++] = rgb[0];
+            pixels[p++] = rgb[1];
+            pixels[p++] = rgb[2];
+            pixels[p++] = 255;
+        }
+    }
+
+    ctx.putImageData(image, 0, 0);
+}
+
+// --- 3. REFACTORED ASYNC CREATE FUNCTION ---
+async function createArtwork(){
+    artworkCount++;
+    const currentIndex = artworkCount; // Lock in the index for this specific artwork
+
+    // Build the DOM elements synchronously to maintain layout
+    const artwork = document.createElement("div");
+    artwork.className = "artwork";
+
+    const canvas = document.createElement("canvas");
+    const caption = document.createElement("div");
+    caption.className = "caption";
+
+    const username = usernames[(currentIndex - 1) % usernames.length];
+
+    // Show a loading state while the API is contacted
+    caption.innerHTML = `<strong>${username}</strong> — Fetching signal...`;
+
+    artwork.appendChild(canvas);
+    artwork.appendChild(caption);
+    gallery.insertBefore(artwork, sentinel);
+
+    // Fetch the quote asynchronously
+    const quoteText = await fetchQuote();
+
+    // Derive the mathematical seed directly from the quote text
+    const quoteSeed = hashString(quoteText);
+
+    // Update the caption with the final quote
+    caption.innerHTML = `<strong>${username}</strong> — "${quoteText}"`;
+
+    // Render the painting using the derived seed
+    requestAnimationFrame(()=>{
+        renderPainting(canvas, quoteSeed, currentIndex);
+    });
+}
+
+// Initialize the first batch
+for(let i=0;i<8;i++){
+    createArtwork();
+}
+
+// Infinite scroll observer
+const observer = new IntersectionObserver((entries)=>{
+    if(entries[0].isIntersecting){
+        for(let i=0;i<5;i++){
+            createArtwork();
+        }
+    }
+},{
+    rootMargin:"1200px"
+});
+
+observer.observe(sentinel);
+
+</script>
+
+</body>
+</html>
+infinite_painter_quotes.html
+Displaying infinite_painter_quotes.html.
